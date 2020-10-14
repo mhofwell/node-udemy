@@ -1,0 +1,2 @@
+this file was created by node.js
+cool
