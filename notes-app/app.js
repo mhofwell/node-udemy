@@ -1,20 +1,87 @@
 const chalk = require('chalk');
+const yargs = require('yargs');
+const fs = require('fs');
 const getNotes = require('./notes.js');
 
-const notes = getNotes();
+// Customize yargs version
 
-console.log(chalk.bold.inverse.green(notes));
+yargs.version('1.1.0');
 
-// const validator = require('validator');
-// const getNotes = require('./notes.js');
+// create add command
 
-// const notes = getNotes();
+yargs.command({
+        command: 'add',
+        describe: 'Add a new note',
+        builder: {
+                name: {
+                        describe: 'Note title',
+                        demandOption: true,
+                        types: 'string',
+                },
+                planet: {
+                        describe: 'Note body',
+                        demandOption: true,
+                        types: 'string',
+                },
+                age: {
+                        describe: 'Note body',
+                        demandOption: true,
+                        types: 'integer',
+                },
+        },
+        handler(argv, err) {
+                if (err) throw err;
+                const { name, planet, age } = argv;
+                const newObj = { name, planet, age };
+                const objJSON = JSON.stringify(newObj);
+                fs.writeFileSync('people.json', objJSON);
+                console.log(newObj);
+                console.log(chalk.greenBright.inverse('SUCCESS!'));
+        },
+});
 
-// console.log(validator.isEmail('michael.hofweller@gmail.com'));
-// console.log(validator.isURL('www.google.com'));
+// create remove command
 
-// const add = require('./utils.js');
+yargs.command({
+        command: 'remove',
+        describe: 'Removing a note',
+        handler() {
+                console.log('removing a new note!');
+        },
+});
 
-// console.log(add(2, 1));
+// create read command
 
-//
+yargs.command({
+        command: 'read',
+        describe: 'Reading a note',
+        builder: {
+                filename: {
+                        describe: 'File name',
+                        demandOption: true,
+                        types: 'string',
+                },
+        },
+        handler(argv) {
+                console.log(argv);
+                const { filename } = argv;
+                const sysData = fs.readFileSync(filename);
+                const strJSON = sysData.toString();
+                const objJSON = JSON.parse(strJSON);
+                console.log(strJSON);
+        },
+});
+
+// create list command
+
+yargs.command({
+        command: 'list',
+        describe: 'Listing your notes',
+        handler() {
+                console.log('Listing your notes!');
+        },
+});
+
+// add, remove, read, list options!
+
+yargs.parse();
