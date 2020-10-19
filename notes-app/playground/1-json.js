@@ -1,29 +1,142 @@
-const { parse } = require('yargs');
+const chalk = require('chalk');
+const yargs = require('yargs');
 const fs = require('fs');
+const getNotes = require('./notes.js');
 
-// read the file in to get our data
-const dataBuffer = fs.readFileSync('1-json.json');
+// Customize yargs version
 
-// converted the data buffer into a string with JSON format.
-const dataJSON = dataBuffer.toString();
+yargs.version('1.1.0');
 
-// parsed the data into an object
-const data = JSON.parse(dataJSON);
+// create add command
 
-// accessed the objects property
-console.log(data.title);
+yargs.command({
+        command: 'add',
+        describe: 'Add a new note',
+        builder: {
+                name: {
+                        describe: 'Note title',
+                        demandOption: true,
+                        types: 'string',
+                },
+                planet: {
+                        describe: 'Note body',
+                        demandOption: true,
+                        types: 'string',
+                },
+                age: {
+                        describe: 'Note body',
+                        demandOption: true,
+                        types: 'integer',
+                },
+        },
+        handler(argv, err) {
+                if (err) throw err;
+                const { name, planet, age } = argv;
+                const newObj = { name, planet, age };
+                const objJSON = JSON.stringify(newObj);
+                fs.writeFileSync('people.json', objJSON);
+                console.log(newObj);
+                console.log(chalk.greenBright.inverse('SUCCESS!'));
+        },
+});
 
-// const book = {
-//         title: 'Ego is the enemy',
-//         author: 'Ryan Holiday',
-// };
+// create remove command
 
-// const bookJSON = JSON.stringify(book);
+yargs.command({
+        command: 'remove',
+        describe: 'Removing a note',
+        handler() {
+                console.log('removing a new note!');
+        },
+});
 
-// fs.writeFileSync('1-json.json', bookJSON);
+// create edit command
 
-// console.log(bookJSON);
+yargs.command({
+        command: 'edit',
+        describe: 'Editing a note',
+        builder: {
+                name: {
+                        describe: 'Note title',
+                        demandOption: false,
+                        types: 'string',
+                },
+                planet: {
+                        describe: 'Note body',
+                        demandOption: false,
+                        types: 'string',
+                },
+                age: {
+                        describe: 'Note body',
+                        demandOption: false,
+                        types: 'integer',
+                },
+                filename: {
+                        describe: 'File name',
+                        demandOption: true,
+                        types: 'string',
+                },
+        },
+        handler(argv, err) {
+                if (err) throw err;
 
-// const parsedData = JSON.parse(bookJSON);
+                // get the args into their own vars
+                const { name, planet, age, filename } = argv;
 
-// console.log(parsedData);
+                // get the object of the JSON file you want to change
+                const sysData = fs.readFileSync(filename);
+                const strJSON = sysData.toString();
+                let objJSON = JSON.parse(strJSON);
+
+                // check if the various properties exist as input from the user, if they do, overwrite them.
+                objJSON.name = name ? (objJSON.name = name) : objJSON.name;
+                objJSON.planet = planet ? (objJSON.planet = planet) : objJSON.planet;
+                objJSON.age = age ? (objJSON.age = age) : objJSON.age;
+
+                // translate the object back into JSON string.
+                objJSON = JSON.stringify(objJSON);
+                fs.writeFileSync('people.json', objJSON);
+                console.log(objJSON);
+                console.log(chalk.greenBright.inverse('SUCCESS!'));
+        },
+});
+
+// create read command
+
+yargs.command({
+        command: 'read',
+        describe: 'Reading a note',
+        builder: {
+                filename: {
+                        describe: 'File name',
+                        demandOption: true,
+                        types: 'string',
+                },
+        },
+        handler(argv, err) {
+                if (err) throw err;
+                console.log(argv);
+                const { filename } = argv;
+                const sysData = fs.readFileSync(filename);
+                const strJSON = sysData.toString();
+                const objJSON = JSON.parse(strJSON);
+                console.log(objJSON);
+                console.log(chalk.greenBright.inverse('SUCCESS!'));
+        },
+});
+
+// create list command
+
+yargs.command({
+        command: 'list',
+        describe: 'Listing your notes',
+        handler() {
+                console.log('Listing your notes!');
+        },
+});
+
+// add, remove, read, list options!
+
+yargs.parse();
+
+// obligatory commit
