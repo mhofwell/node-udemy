@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const yargs = require('yargs');
 const fs = require('fs');
-const notes = require('./notes.js');
+const noteUtils = require('./notes.js');
 
 // Customize yargs version
 
@@ -26,7 +26,7 @@ yargs.command({
         },
         handler(argv) {
                 try {
-                        notes.addNotes(argv.title, argv.body);
+                        noteUtils.addNotes(argv.title, argv.body);
                 } catch (err) {
                         console.error(err);
                 }
@@ -47,7 +47,7 @@ yargs.command({
         },
         handler(argv) {
                 try {
-                        notes.removeNotes(argv.title, argv.body);
+                        noteUtils.removeNotes(argv.title, argv.body);
                 } catch (err) {
                         console.error(err);
                 }

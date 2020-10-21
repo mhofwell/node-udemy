@@ -30,20 +30,22 @@ function addNotes(title, body) {
 
 function removeNotes(title, body) {
         // load in the current JSON note set
-        const notes = loadNotes();
-        // create a duplicate array
-        const duplicateNotes = notes.filter(note => note.title === title);
-
-        // check for duplicate, if there no duplicate, push the object.
-        if (duplicateNotes.length === 0) {
-                notes.push({
-                        title,
-                        body,
-                });
-                saveNotes(notes);
-                console.log(chalk.greenBright.inverse('Success!'));
-        } else {
-                console.log(chalk.redBright.inverse('Title taken! Please try another.'));
+        let notes = loadNotes();
+        try {
+                // find the index of the note
+                const index = notes.indexOf(note => note.title === title);
+                const record = notes[index];
+                // console.log() the note to be removed
+                console.log(`Removing ${chalk.redBright.inverse(record)}`);
+                // splice the array at that index and only inlcude 1 array item.
+                notes = notes.splice(index, 1);
+                // turn the array into JSON.stringify()
+                const JSONnotes = JSON.stringify(notes);
+                // fs.writeFileSync(JSON string file)
+                fs.writeFileSync('notes.json', JSONnotes);
+        } catch (err) {
+                console.log(chalk.redBright.inverse('Remove failed! No such record.'));
+                return err;
         }
 }
 
