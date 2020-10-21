@@ -35,6 +35,25 @@ yargs.command({
 
 // create remove command
 
+yargs.command({
+        command: 'Remove',
+        describe: 'Remove a note',
+        builder: {
+                title: {
+                        describe: 'Note title',
+                        demandOption: true,
+                        types: 'string',
+                },
+        },
+        handler(argv) {
+                try {
+                        notes.removeNotes(argv.title, argv.body);
+                } catch (err) {
+                        console.error(err);
+                }
+        },
+});
+
 yargs.parse();
 
 // obligatory commit

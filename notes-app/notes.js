@@ -28,6 +28,25 @@ function addNotes(title, body) {
         }
 }
 
+function removeNotes(title, body) {
+        // load in the current JSON note set
+        const notes = loadNotes();
+        // create a duplicate array
+        const duplicateNotes = notes.filter(note => note.title === title);
+
+        // check for duplicate, if there no duplicate, push the object.
+        if (duplicateNotes.length === 0) {
+                notes.push({
+                        title,
+                        body,
+                });
+                saveNotes(notes);
+                console.log(chalk.greenBright.inverse('Success!'));
+        } else {
+                console.log(chalk.redBright.inverse('Title taken! Please try another.'));
+        }
+}
+
 function loadNotes() {
         try {
                 const dataBuffer = fs.readFileSync('notes.json');
@@ -47,4 +66,4 @@ function saveNotes(notes) {
                 console.error(err);
         }
 }
-module.exports = { getNotes, addNotes };
+module.exports = { getNotes, addNotes, removeNotes };
