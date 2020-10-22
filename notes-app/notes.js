@@ -28,25 +28,26 @@ function addNotes(title, body) {
         }
 }
 
-function removeNotes(title, body) {
+// remove a note
+
+function removeNotes(title) {
         // load in the current JSON note set
-        let notes = loadNotes();
-        try {
-                // find the index of the note
-                const index = notes.indexOf(note => note.title === title);
-                const record = notes[index];
-                // console.log() the note to be removed
-                console.log(`Removing ${chalk.redBright.inverse(record)}`);
-                // splice the array at that index and only inlcude 1 array item.
-                notes = notes.splice(index, 1);
-                // turn the array into JSON.stringify()
-                const JSONnotes = JSON.stringify(notes);
-                // fs.writeFileSync(JSON string file)
-                fs.writeFileSync('notes.json', JSONnotes);
-        } catch (err) {
-                console.log(chalk.redBright.inverse('Remove failed! No such record.'));
-                return err;
-        }
+        const notes = loadNotes();
+
+        // create a new array of titles that don't match the one you want removed.
+
+        const updatedNotes = notes.filter(note => note.title !== title);
+        console.log(updatedNotes);
+
+        // tell the user what you're doing
+        console.log(chalk.redBright.inverse(`Removing ${title}`));
+
+        // // save the new notes document
+        saveNotes(updatedNotes);
+
+        console.log(chalk.greenBright.inverse(`Success! Record removed`));
+
+        console.log(chalk.redBright.inverse('No title found! Please try again.'));
 }
 
 function loadNotes() {
@@ -69,3 +70,27 @@ function saveNotes(notes) {
         }
 }
 module.exports = { getNotes, addNotes, removeNotes };
+
+// function removeNotes(title) {
+//         // load in the current JSON note set
+//         const notes = loadNotes();
+
+//         // find the index of the note
+//         const index = notes.map(note => note.title).indexOf(title);
+
+//         if (index === -1) {
+//                 console.log(chalk.redBright.inverse('Remove failed! No such record.'));
+//                 return;
+//         }
+//         // remove the record from the notes array
+//         const removedRecord = notes.splice(index, index + 1);
+
+//         // tell the user what you're doing
+//         console.log(chalk.redBright.inverse(`Removing ${JSON.stringify(removedRecord)}`));
+
+//         // save the new notes document
+//         saveNotes(notes);
+//         console.log(chalk.greenBright.inverse(`Success! Record removed`));
+// }
+
+// obligatory commit
