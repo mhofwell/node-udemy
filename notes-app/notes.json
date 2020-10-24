@@ -1,1 +1,10 @@
-[{"title":"mike","body":"flksjflaj laaljslkfj s lkjda"}]
+[
+    {
+        "title": "abc",
+        "body": "eggs, bacon, cheese"
+    },
+    {
+        "title": "def",
+        "body": "most def, def jam records"
+    }
+]
