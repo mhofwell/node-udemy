@@ -32,9 +32,7 @@ function addNotes(title, body) {
 
 function removeNotes(title) {
         const notes = loadNotes();
-        console.log(notes);
         const titleExists = notes.filter(note => note.title === title);
-        console.log(titleExists);
 
         if (!titleExists) {
                 console.log(chalk.redBright.inverse('No such title exists! Try another name.'));
@@ -46,13 +44,37 @@ function removeNotes(title) {
         }
 }
 
+// list your notes
+
+function listNotes() {
+        const notes = loadNotes();
+        console.log(chalk.blueBright.inverse('Your Notes:'));
+        for (let i = 0; i < notes.length; i++) {
+                console.log(notes[i].title);
+        }
+}
+
+// read a note
+
+function readNotes(title) {
+        const notes = loadNotes();
+        const noteToRead = notes.find(note => note.title === title);
+
+        if (!noteToRead) {
+                console.log(chalk.redBright.inverse('No such record!'));
+        } else {
+                console.log(chalk.blueBright.inverse(noteToRead.title));
+                console.log(noteToRead.body);
+        }
+}
+
 function loadNotes() {
         try {
                 const dataBuffer = fs.readFileSync('notes.json');
                 const dataJSONStr = dataBuffer.toString();
                 return JSON.parse(dataJSONStr);
         } catch (err) {
-                // console.error(err);
+                console.error(err);
                 return [];
         }
 }
@@ -65,4 +87,4 @@ function saveNotes(notes) {
                 console.error(err);
         }
 }
-module.exports = { getNotes, addNotes, removeNotes };
+module.exports = { getNotes, addNotes, removeNotes, listNotes, readNotes };

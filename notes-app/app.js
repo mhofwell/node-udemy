@@ -54,6 +54,37 @@ yargs.command({
         },
 });
 
+yargs.command({
+        command: 'list',
+        describe: 'List your notes',
+        handler() {
+                try {
+                        noteUtils.listNotes();
+                } catch (err) {
+                        console.error(err);
+                }
+        },
+});
+
+yargs.command({
+        command: 'read',
+        describe: 'Read a note',
+        builder: {
+                title: {
+                        describe: 'Note title',
+                        demandOption: true,
+                        types: 'string',
+                },
+        },
+        handler(argv) {
+                try {
+                        noteUtils.readNotes(argv.title);
+                } catch (err) {
+                        console.error(err);
+                }
+        },
+});
+
 yargs.parse();
 
 // obligatory commit
